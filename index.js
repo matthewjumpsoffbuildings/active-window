@@ -1,5 +1,7 @@
 var fs = require('fs');
 var config = getConfig();
+const spawn = require('child_process').spawn;
+var ls;
 
 /**
  * This callback handle the response request by getActiveWindow function
@@ -14,8 +16,7 @@ var config = getConfig();
 * @param {float}   [interval = 0] - Loop interval in seconds. For milliseconds use fraction (0.1 = 100ms)
 */
 exports.getActiveWindow = function(callback,repeats,interval){
-  const spawn = require('child_process').spawn;
-
+  
   interval = (interval) ?  interval : 0;
   repeats = (repeats) ? repeats : 1;
 
@@ -29,7 +30,7 @@ exports.getActiveWindow = function(callback,repeats,interval){
   parameters.push(process.platform == 'win32' ? (interval * 1000 | 0) : interval);
 
   //Run shell script
-  const ls  = spawn(config.bin,parameters);
+  ls = spawn(config.bin,parameters);
   ls.stdout.setEncoding('utf8');
 
   //Obtain successful response from script
@@ -43,6 +44,10 @@ exports.getActiveWindow = function(callback,repeats,interval){
   });
 
   ls.stdin.end();
+}
+
+exports.exit = function(){
+  if(ls) ls.kill(); 
 }
 
 /**
