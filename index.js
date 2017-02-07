@@ -25,7 +25,7 @@ exports.getActiveWindow = function(callback,repeats,interval){
     repeats = '\\-1';
   }
 
-  parameters  = config.parameters;
+  const parameters  = config.parameters.slice();
   parameters.push(repeats);
   parameters.push(process.platform == 'win32' ? (interval * 1000 | 0) : interval);
 
